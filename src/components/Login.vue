@@ -31,13 +31,15 @@
         },
         methods:{
             login(){
+                console.log(this.$store.state)
                 this.$axios.post("/login",{
                     username:this.loginForm.username,
                     password:this.loginForm.password
                 }).then(resp=>{
                     if (resp.data.code===200){
-                        this.$
-                        this.$router.replace('/index')
+                        this.$store.commit('login',this.loginForm)
+                        var path=this.$route.query.redirect
+                        this.$router.replace({path:path==='/' || path===undefined ? '/index' :path})
                     }
 
                 }).catch(()=> {
