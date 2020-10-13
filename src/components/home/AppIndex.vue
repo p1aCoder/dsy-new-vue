@@ -22,8 +22,9 @@
         name: "AppIndex",
         data(){
             return {
-                imagebox:[{id:0,idView:"http://pic.netbian.com/uploads/allimg/201007/231544-1602083744319e.jpg"},
-                    {id:1,idView:"http://pic.netbian.com/uploads/allimg/200909/214821-1599659301ffdd.jpg"},
+                imagebox:[{id:0,idView:require('@/assets/girl2.jpg')},
+                    {id:1,idView:require('@/assets/girl.jpg')},
+                    {id:2,idView:require('@/assets/fruit.jpg')},
                 ]
             }
         }
