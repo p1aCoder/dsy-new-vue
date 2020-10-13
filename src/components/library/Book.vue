@@ -46,7 +46,7 @@
                 books:[
                     {
                         cover: 'https://i.loli.net/2019/04/10/5cada7e73d601.jpg',
-                        title: '三体',
+                        title: '三体1',
                         author: '刘慈欣',
                         date: '2019-05-05',
                         press: '重庆出版社',
