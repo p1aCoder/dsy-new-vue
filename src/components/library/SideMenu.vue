@@ -2,8 +2,8 @@
     <el-menu
             default-active="0"
             class="categories"
-            active-text-color="#3354fe">
-<!--            @select="handleSelect">-->
+            active-text-color="#3354fe"
+            @select="handleSelect">
         <el-menu-item index="0">
             <i class="el-icon-menu"></i>
             <span>全部</span>
@@ -38,9 +38,17 @@
 <script>
     export default {
         name: "SideMenu",
-        methods:[
-
-            ]
+        data(){
+            return{
+                cid:''
+            }
+        },
+        methods:{
+            handleSelect(key){
+                this.cid=key
+                this.$emit('indexSelect')
+            }
+        }
     }
 </script>
 

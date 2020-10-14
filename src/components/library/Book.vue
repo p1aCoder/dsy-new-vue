@@ -1,10 +1,12 @@
 <template>
-    <div>
-        <el-row style="height: 840px">
+    <div style="position: absolute;left: 200px;height: 540px;padding-right: 200px;width: 1300px">
+        <el-row >
+            <SearchBar @onSearch="searchResult" ref="searchBar"></SearchBar>
+            <edit-form ref="editForm" @onSubmit="loadBooks"></edit-form>
             <el-tooltip
                 placement="right"
                 transition="el-collapse-transition"
-                v-for="item in books"
+                v-for="item in books.slice((currentPage-1)*pagesize,currentPage*pagesize)"
                 :key="item.id">
                 <p slot="content">{{item.title}}</p>
                 <p slot="content">
@@ -15,54 +17,114 @@
                 <p slot="content" style="width: 300px">{{item.abs}}</p>
 
 
-                <el-card :body-style="{ padding: '0px' }" style="width: 150px;margin: 0 15px 20px 0">
-                    <img :src="item.cover" class="image">
+                <el-card
+                         style="width: 170px;margin: 0 15px 20px 0;float: left;height: 280px"
+                         shadow="hover">
+                    <img :src="item.cover" class="image" @click="edit(item)">
                     <div style="padding: 5px;">
-                        <el-row style="text-align: left">{{item.title}}</el-row>
+                        <el-row style="text-align: left;margin-bottom: 6px">{{item.title}}</el-row>
                         <el-row style="text-align: left;font-size: 14px;color: #475669;font-family:楷体">{{item.author}}</el-row>
                         <div class="bottom clearfix">
-                            <el-button type="text" style="float: right" class="button">操作按钮</el-button>
+                            <el-row style="margin-top: 5px">
+                                <i style="float: right;cursor: pointer" class="el-icon-delete" @click="deleteBook(item.id)"></i>
+                                <i class="el-icon-star-off" style="cursor: pointer"></i>
+                            </el-row>
                         </div>
                     </div>
                 </el-card>
-
             </el-tooltip>
         </el-row>
-        <el-row>
+        <el-row style="position: absolute;right: 700px;top: 660px">
             <el-pagination
-            :current-page="1"
-            :page-size="10"
-            :total="20">
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-size="pagesize"
+            :total="books.length">
             </el-pagination>
         </el-row>
     </div>
 </template>
 
 <script>
+    import SearchBar from "@/components/library/SearchBar";
+    import EditForm from "@/components/library/EditForm";
     export default {
         name: "Book",
-        data(){
-            return{
-                books:[
-                    {
-                        cover: 'https://i.loli.net/2019/04/10/5cada7e73d601.jpg',
-                        title: '三体1',
-                        author: '刘慈欣',
-                        date: '2019-05-05',
-                        press: '重庆出版社',
-                        abs: '文化大革命如火如荼进行的同时。军方探寻外星文明的绝秘计划“红岸工程”取得了突破性进展。但在按下发射键的那一刻，历经劫难的叶文洁没有意识到，她彻底改变了人类的命运。地球文明向宇宙发出的第一声啼鸣，以太阳为中心，以光速向宇宙深处飞驰……'
-                    }
-                ]
+        components: {EditForm, SearchBar},
+        data () {
+            return {
+                books: [],
+                currentPage: 1,
+                pagesize: 12
             }
+        },
+        mounted: function () {
+            this.loadBooks()
+        },
+        methods: {
+            loadBooks() {
+                this.$axios.get('/book').then(resp => {
+                    if (resp && resp.status === 200) {
+                        this.books = resp.data
+                    }
+                })
+            },
+            handleCurrentChange:function (currentPage) {
+                this.currentPage=currentPage
+            },
+            searchResult(){
+                this.$axios.get("/search?keywords="+this.$refs.searchBar.keywords).then(resp=>{
+                    if (resp&&resp.status===200){
+                        this.books=resp.data
+                    }
+                })
+            },
+            edit(item){
+                this.$refs.editForm.dialogFormVisible=true
+                this.$refs.editForm.form={
+                    id: item.id,
+                    cover: item.cover,
+                    title: item.title,
+                    author: item.author,
+                    date: item.date,
+                    press: item.press,
+                    abs: item.abs,
+                    category: {
+                        id: item.category.id.toString(),
+                        name: item.category.name
+                    }
+                }
+            },
+            deleteBook (id) {
+                this.$confirm('此操作将永久删除该书籍, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                        this.$axios
+                            .post('/delete', {id: id}).then(resp => {
+                            if (resp && resp.status === 200) {
+                                this.loadBooks()
+                            }
+                        })
+                    }
+                ).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    })
+                })
+            },
         }
     }
 </script>
 
 <style scoped>
     .image {
-        width: 88%;
+        width: 99%;
+        height: 170px;
         display: block;
         cursor: pointer;
-        padding: 10px 10px 10px 10px;
+        padding: 0 -10px 10px -10px;
     }
 </style>
