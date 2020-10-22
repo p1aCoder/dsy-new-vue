@@ -13,6 +13,7 @@
                 </el-form-item>
             </el-form>
             <el-button type="primary" v-on:click="login" style="background: black;border: none">登录</el-button>
+            <router-link to="/register"><el-button type="warning" style="margin-left: 15px;border: none">注册</el-button></router-link>
         </el-card>
     </body>
 
@@ -31,7 +32,6 @@
         },
         methods:{
             login(){
-                console.log(this.$store.state)
                 this.$axios.post("/login",{
                     username:this.loginForm.username,
                     password:this.loginForm.password
@@ -40,6 +40,8 @@
                         this.$store.commit('login',this.loginForm)
                         var path=this.$route.query.redirect
                         this.$router.replace({path:path==='/' || path===undefined ? '/index' :path})
+                    }else {
+                        this.$message(resp.data.message)
                     }
 
                 }).catch(()=> {

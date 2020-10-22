@@ -8,14 +8,25 @@ import Home from "@/components/home/Home";
 import Jotter from "@/components/jotter/Jotter";
 import NavMenu from "@/components/home/NavMenu";
 import LibraryIndex from "@/components/library/LibraryIndex";
+import Register from "@/components/Register";
 
 Vue.use(Router)
 
 export default new Router({
     mode:'history',
     routes: [
+        // {
+        //     path: '/',
+        //     name: 'index',
+        //     redirect: '/index',
+        //     component: AppIndex,
+        //     meta: {
+        //         requireAuth: true
+        //     }
+        // },
         { path: '/', redirect: '/login' },
         { path: '/login', name: 'Login', component: Login },
+        { path: '/register', name: 'Login', component: Register },
 
         { path: '/home', name: 'Login', component: Home,redirect: '/index',children:[
                 { path: '/index', name: 'AppIndex', component: AppIndex ,meta:{requireAuth:true}},

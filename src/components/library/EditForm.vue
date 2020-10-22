@@ -13,6 +13,7 @@
                 </el-form-item>
                 <el-form-item label="封面">
                     <el-input v-model="form.cover"></el-input>
+                    <img-upload @onUpload="uploadImg" ref="imgUpload"></img-upload>
                 </el-form-item>
                 <el-form-item label="简介">
                     <el-input type="textarea" v-model="form.abs"></el-input>
@@ -41,8 +42,10 @@
 </template>
 
 <script>
+    import ImgUpload from "@/components/library/ImgUpload";
     export default {
         name: "EditForm",
+        components: {ImgUpload},
         data(){
             return{
                 dialogFormVisible:false,
@@ -92,6 +95,9 @@
                     category: {}
                 }
             },
+            uploadImg(){
+                this.form.cover=this.$refs.imgUpload.url
+            }
         }
     }
 </script>
