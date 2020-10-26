@@ -22,6 +22,7 @@
                 this.$axios.get('/book/'+this.$refs.sideMenu.cid).then(resp=>{
                     if (resp&&resp.status===200){
                         this.$refs.bookArea.books=resp.data
+                        this.$refs.bookArea.currentPage=1
                     }
                 })
             }

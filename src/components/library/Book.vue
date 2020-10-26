@@ -3,6 +3,7 @@
         <el-row >
             <SearchBar @onSearch="searchResult" ref="searchBar"></SearchBar>
             <edit-form ref="editForm" @onSubmit="loadBooks"></edit-form>
+            <rate-form ref="rateForm" @onSubmit="loadBooks"></rate-form>
             <el-tooltip
                 placement="right"
                 transition="el-collapse-transition"
@@ -14,6 +15,7 @@
                     <span>{{item.press}}</span>*
                     <span>{{item.date}}</span>
                 </p>
+                <p slot="content">目前评分：{{numFilter(item.rate)}}</p>
                 <p slot="content" style="width: 300px">{{item.abs}}</p>
 
 
@@ -27,7 +29,7 @@
                         <div class="bottom clearfix">
                             <el-row style="margin-top: 5px">
                                 <i style="float: right;cursor: pointer" class="el-icon-delete" @click="deleteBook(item.id)"></i>
-                                <i class="el-icon-star-off" style="cursor: pointer"></i>
+                                <i class="el-icon-star-off" style="cursor: pointer" @click="editRate(item)"></i>
                             </el-row>
                         </div>
                     </div>
@@ -48,9 +50,10 @@
 <script>
     import SearchBar from "@/components/library/SearchBar";
     import EditForm from "@/components/library/EditForm";
+    import RateForm from "@/components/library/RateForm";
     export default {
         name: "Book",
-        components: {EditForm, SearchBar},
+        components: {RateForm, EditForm, SearchBar},
         data () {
             return {
                 books: [],
@@ -114,6 +117,17 @@
                         message: '已取消删除'
                     })
                 })
+            },
+            editRate(item){
+                this.$refs.rateForm.rateVisible=true
+                this.$refs.rateForm.form={
+                    id:item.id,
+                    title:item.title
+                }
+            },
+            numFilter(value) {
+                const realVal = parseFloat(value).toFixed(1);
+                return realVal;
             },
         }
     }

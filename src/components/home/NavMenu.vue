@@ -31,6 +31,7 @@
             logout(){
                 this.$axios.get("/logout").then(resp=>{
                     if (resp.data.code===200){
+                        this.$message(resp.data.result)
                         this.$store.commit("logout")
                         this.$router.replace("/login")
                     }
